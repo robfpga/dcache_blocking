@@ -1,0 +1,6 @@
+[submodule "contrib/libv"]
+	path = contrib/libv
+	url = git@github.com:stephenry/libv.git
+[submodule "contrib/libtb"]
+	path = contrib/libtb
+	url = git@github.com:stephenry/libtb.git
