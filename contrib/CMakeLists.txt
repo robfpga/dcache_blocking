@@ -25,5 +25,6 @@
 ## POSSIBILITY OF SUCH DAMAGE.
 ##========================================================================== //
 
+ADD_SUBDIRECTORY(systemc)
 ADD_SUBDIRECTORY(libtb)
 ADD_SUBDIRECTORY(libv)

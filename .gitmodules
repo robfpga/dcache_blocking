@@ -4,3 +4,6 @@
 [submodule "contrib/libtb"]
 	path = contrib/libtb
 	url = git@github.com:stephenry/libtb.git
+[submodule "contrib/systemc"]
+	path = contrib/systemc
+	url = https://github.com/stephenry/systemc
