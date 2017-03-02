@@ -121,7 +121,9 @@ void DCacheBlockingTb::wait_until_not_busy() {
 
 void DCacheBlockingTb::cache_invalidate() {
   LIBTB_REPORT_DEBUG("Invalidating Cache");
-  issue_op(CacheCommand{INV});
+  CacheCommand c;
+  c.c = INV;
+  issue_op(c);
   wait_until_busy();
   wait_until_not_busy();
 }

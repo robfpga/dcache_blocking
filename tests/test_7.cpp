@@ -44,7 +44,11 @@ struct test_7 : public DCacheBlockingTb {
     mem_.clear_count();
     for (i = 0; i < lines_total; i++) {
       A = i << line_shift;
-      issue_op(CacheCommand{LOAD, A});
+
+      CacheCommand c;
+      c.c = LOAD;
+      c.a = A;
+      issue_op(c);
     }
     wait_until_complete();
     if (mem_.count_op_wrbk() != 0) LIBTB_REPORT_ERROR("Unexpected writeback");
@@ -59,7 +63,12 @@ struct test_7 : public DCacheBlockingTb {
     // All consequent cache operations should hit in cache.
     mem_.clear_count();
     i = 1000;
-    while (i--) issue_op(CacheCommand{LOAD, random_address(A)});
+    while (i--) {
+      CacheCommand c;
+      c.c = LOAD;
+      c.a = random_address(A);
+      issue_op(c);
+    }
     wait_until_complete();
     if (mem_.count_op_total() != 0) {
       std::stringstream ss;

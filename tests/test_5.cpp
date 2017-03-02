@@ -43,14 +43,21 @@ struct test_5 : public DCacheBlockingTb {
     while (i--) {
       const uint32_t a = random_address();
       const uint32_t d = libtb::random<uint32_t>();
-      issue_op(CacheCommand{STORE, a, d});
+      CacheCommand c;
+      c.c = STORE;
+      c.a = a;
+      c.d = d;
+      issue_op(c);
     }
 
     // EMIT Randomized loads
     i = N;
     while (i--) {
       const uint32_t a = random_address();
-      issue_op(CacheCommand{LOAD, a});
+      CacheCommand c;
+      c.c = LOAD;
+      c.a = a;
+      issue_op(c);
     }
     wait_until_complete();
     LIBTB_REPORT_INFO("Test5 END: Randomized stores");

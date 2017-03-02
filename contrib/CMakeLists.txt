@@ -26,5 +26,10 @@
 ##========================================================================== //
 
 ADD_SUBDIRECTORY(systemc)
+FIND_PACKAGE(SystemC REQUIRED)
+
+FIND_PACKAGE(Verilator REQUIRED)
+BUILD_VERILATOR_LIBS()
+
 ADD_SUBDIRECTORY(libtb)
 ADD_SUBDIRECTORY(libv)

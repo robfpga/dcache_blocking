@@ -35,20 +35,20 @@ struct test_4 : public DCacheBlockingTb {
 
     cache_invalidate();
 
-    issue_op(CacheCommand{STORE, 0x10000000, 0x11111111});
-    issue_op(CacheCommand{LOAD, 0x10000000, 0x11111111});
+    issue_op(CacheCommand(STORE, 0x10000000, 0x11111111));
+    issue_op(CacheCommand(LOAD, 0x10000000, 0x11111111));
     //
-    issue_op(CacheCommand{STORE, 0x20000000, 0x22222222});
-    issue_op(CacheCommand{LOAD, 0x20000000, 0x22222222});
+    issue_op(CacheCommand(STORE, 0x20000000, 0x22222222));
+    issue_op(CacheCommand(LOAD, 0x20000000, 0x22222222));
     //
-    issue_op(CacheCommand{STORE, 0x30000000, 0x33333333});
-    issue_op(CacheCommand{LOAD, 0x30000000, 0x33333333});
+    issue_op(CacheCommand(STORE, 0x30000000, 0x33333333));
+    issue_op(CacheCommand(LOAD, 0x30000000, 0x33333333));
     //
-    issue_op(CacheCommand{STORE, 0x40000000, 0x44444444});
-    issue_op(CacheCommand{LOAD, 0x40000000, 0x44444444});
+    issue_op(CacheCommand(STORE, 0x40000000, 0x44444444));
+    issue_op(CacheCommand(LOAD, 0x40000000, 0x44444444));
     //
-    issue_op(CacheCommand{STORE, 0x50000000, 0x55555555});
-    issue_op(CacheCommand{LOAD, 0x50000000, 0x55555555});
+    issue_op(CacheCommand(STORE, 0x50000000, 0x55555555));
+    issue_op(CacheCommand(LOAD, 0x50000000, 0x55555555));
 
     wait_until_complete();
     LIBTB_REPORT_INFO("Test4 START: Directed stores");

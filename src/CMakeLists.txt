@@ -25,6 +25,9 @@
 ## POSSIBILITY OF SUCH DAMAGE.
 ##========================================================================== //
 
-LIST(APPEND SRCS "dcache_blocking_tb_model.cpp")
-LIST(APPEND SRCS "dcache_blocking_tb_common.cpp")
-LIBTB_BUILD_TB_TOP("${SRCS}")
+SET(SRCS
+  dcache_blocking_tb.cpp
+  dcache_blocking_tb_model.cpp
+  dcache_blocking_tb_common.cpp
+  )
+LIBTB_BUILD_TB(dcache_blocking_tb "${SRCS}")

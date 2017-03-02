@@ -25,27 +25,4 @@
 ## POSSIBILITY OF SUCH DAMAGE.
 ##========================================================================== //
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
-PROJECT(dcache_blocking)
-
-SET(CMAKE_CXX_STANDARD 11)
-
-# Each 'answer' replicates the same set of CMAKE targets. Although the targets
-# are in different directories, and therefore do not conflict, CMAKE
-# specifically disallows such a construction to remain compatible with GUI IDE.
-#
-set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
-
-SET(CMAKE_MODULE_PATH
-  ${CMAKE_MODULE_PATH}
-  ${CMAKE_SOURCE_DIR}/contrib/libtb/cmake
-  )
-
-SET(TB_NAME dcache_blocking_tb)
-SET(RTL_BASE ${CMAKE_SOURCE_DIR}/rtl)
-SET(TB_BASE ${CMAKE_SOURCE_DIR}/src)
-
-ADD_SUBDIRECTORY(contrib)
-ADD_SUBDIRECTORY(rtl)
-ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(tests)
+LIBTB_VERILATE(dcache_blocking_tb)

@@ -33,6 +33,8 @@
 enum CacheOp : uint32_t { NOP = 0, LOAD = 1, STORE = 2, INV = 3 };
 
 struct CacheCommand {
+  CacheCommand(CacheOp c=NOP,uint32_t a=0, uint32_t d=0)
+    : c(c), a(a), d(d) {}
   CacheOp c{NOP};
   uint32_t a{};
   uint32_t d{};

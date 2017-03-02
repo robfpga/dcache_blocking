@@ -25,11 +25,11 @@
 ## POSSIBILITY OF SUCH DAMAGE.
 ##========================================================================== //
 
-LIBTB_BUILD_TEST(dcache_blocking_tb test_0)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_1)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_2)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_3)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_4)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_5)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_6)
-LIBTB_BUILD_TEST(dcache_blocking_tb test_7)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_0 test_0.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_1 test_1.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_2 test_2.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_3 test_3.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_4 test_4.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_5 test_5.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_6 test_6.cpp)
+LIBTB_BUILD_TEST(dcache_blocking_tb test_7 test_7.cpp)
