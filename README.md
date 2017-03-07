@@ -4,27 +4,28 @@
 
 ## Introduction
 
-Cache are a broad micro-architectural technique used to lower latency to main
-memory and to increase bandwidth available to an agent (typically a CPU) when
-accessing memory. Caches are effective at capturing inherent locality between
-access patterns and are fundamental to high performance systems. Cache design is
-a large top and therefore shall not be discussed in depth in this design.
+Caching is a broad micro-architectural technique used to lower latency to main
+memory and thereby increase the effective bandwidth available to an
+agent. Caches are effective at capturing the inherent locality between access
+patterns and are fundamental to high performance micro-architectures. Cache
+design is a huge topic and therefore shall not be discussed in depth.
 
 Presented is a realistic, although non production, implementation of a 4-way
 set-associative data cache typical to that which would be found in a CPU
-implementing a standard 5-staged MIP pipeline.
+implementing a standard 5-staged MIPS pipeline.
 
 The cache implements standard progammatic Invalidation, Lookup and Writeback
 functions. For simplicitly, all access to the cache are aligned and alignment or
-sign-extension logic is not implemented. Line locking, uncache accesses and bus
-faults are not implemented.
+sign-extension logic is not implemented. Line locking, uncached accesses and bus
+faults are not implemented; although these may be readily integrated on top of
+the existing micro-architecture.
 
 Memory macros are single cycle although the micro-architecture can be readily
 extended (through forwarding) to support multi-cycle RAMS (although this is
 atypical of such a design).
 
 A small representative CPU pipeline is presented alongside the datapath of the
-cache. This is used to implemented stall, replay functionality, and to retain
+cache. This is used to implemented stall and replay functionality, and to retain
 pipeline micro-code.
 
 ## System Requirements
@@ -49,6 +50,9 @@ make
 All macros are single ported, single cycle. By consequence of this design
 decision, collisions to the same memory bank may take place on write-back. This
 is detected and resolved by asserting a single cycle stall at the issue stage.
+
+The micro-architecture may be extended by implementing additional forwarding
+logic or by introducing dual-ported SRAM (at the cost of some added area).
 
 ## Micro-Architecture
 

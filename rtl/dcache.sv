@@ -926,6 +926,9 @@ module dcache
       wrbk_w.d                        = s2_dat_r;
       wrbk_w.d.d [s2_cmd_r.addr.p.b]  = s2_cmd_r.data;
 
+      // This is perhaps overly pessimistic as this stall condition need only
+      // take effect when there is a collision to the same slice of the line. At
+      // present, the stall is raised on every and any write back from S2.
       //
       wrbk_valid_w                    =    (~rst)
                                          &   s2_valid_r
