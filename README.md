@@ -39,6 +39,8 @@ pipeline micro-code.
 git clone https://github.com/stephenry/dcache_blocking.git
 cd dcache_blocking
 git submodule update --init --recursive
+mkdir build
+cd build
 cmake ../
 make
 ~~~
