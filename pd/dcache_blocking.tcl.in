@@ -43,11 +43,11 @@ foreach f $file_list {
 read_verilog @LIBV_ROOT@/delay_pipe.sv
 read_verilog @LIBPD_TECH_ROOT@/dpsrams.sv
 read_verilog @LIBPD_TECH_ROOT@/spsram.sv
+read_verilog @LIBPD_TECH_ROOT@/rf.sv
 read_verilog @LIBV_ROOT@/ffs.sv
 read_verilog @LIBV_ROOT@/encoder.sv
 read_verilog @LIBV_ROOT@/rotate.sv
 read_verilog @LIBV_ROOT@/fifo.sv
-read_verilog @LIBV_ROOT@/rf.sv
 
 # XDC
 read_xdc @CMAKE_CURRENT_BINARY_DIR@/$prj.xdc
