@@ -155,9 +155,7 @@ module dcache_blocking_pipe
   // S3
   //
   logic             s3_replay_w;
-  logic             s3_replay_r;
   logic             s3_replay_inv_w;
-  logic             s3_replay_inv_r;
 
   // ======================================================================== //
   //                                                                          //
@@ -172,7 +170,7 @@ module dcache_blocking_pipe
 
       //
       fetch_fifo_push_data       = '0;
-      fetch_fifo_push_data.op    = fetch_op;
+      fetch_fifo_push_data.op    = op_t'(fetch_op);
       fetch_fifo_push_data.addr  = fetch_addr;
       fetch_fifo_push_data.data  = fetch_data;
 
@@ -314,8 +312,7 @@ module dcache_blocking_pipe
 
   // ------------------------------------------------------------------------ //
   //
-  fifo #(.W(CMD_W), .N(), .HAS_REPLAY(1)) u_fetch_fifo
-  (
+  fifo #(.W(CMD_W), .N(), .HAS_REPLAY(1)) u_fetch_fifo (
     //
       .clk               (clk                )
     , .rst               (rst                )

@@ -31,7 +31,7 @@
 static constexpr int DATA_W = 32;
 
 //
-static constexpr int CACHE_SIZE_B = (128 * 1024);
+static constexpr int CACHE_SIZE_B = (32 * 1024);
 
 //
 static constexpr int CACHE_LINE_B = 32;
@@ -43,7 +43,7 @@ static constexpr int CACHE_WAYS_N = 4;
 static constexpr int RAM_DAT_B = 8;
 
 //
-static constexpr int TB_MEM_HI = 0x100000;
+static constexpr int TB_MEM_HI = 0x40000;
 
 //
 static constexpr int TB_MEM_LO = 0x0;

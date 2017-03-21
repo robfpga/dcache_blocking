@@ -37,7 +37,6 @@ module ram_dat_way
 
    //
      input                                             clk
-   , input                                             rst
 
    //======================================================================== //
    //                                                                         //
@@ -67,24 +66,21 @@ module ram_dat_way
   //
   generate for (genvar g = 0; g < RAM_DAT_LINE_N; g++)
 
-    //
-    spram #(   .MEM_N    (RAM_DAT_N)
-             , .DATA_W   (RAM_DAT_W)
-             , .ADDR_W   (RAM_TAG_ADDR_W)
-           ) u_ram_dat
+    // TODO
+    spsram #(   .N       (256     )
+//    spsram #(   .N       (RAM_DAT_N     )
+              , .W       (RAM_DAT_W     )
+            ) u_ram_dat
     (
       //
         .clk               (clk                )
-      , .rst               (rst                )
       //
-      , .cmd_en            (cmd_en [g]         )
-      , .cmd_wen           (cmd_wen [g]        )
-      , .cmd_addr          (cmd_addr           )
-      , .cmd_wdata         (cmd_wdata          )
+      , .en                (cmd_en [g]         )
+      , .wen               (cmd_wen [g]        )
+      , .addr              (cmd_addr           )
+      , .din               (cmd_wdata          )
       //
-      , .resp_rdata        (resp_rdata [g]     )
-      , .resp_serr         ()
-      , .resp_derr         ()
+      , .dout              (resp_rdata [g]     )
     );
 
   endgenerate

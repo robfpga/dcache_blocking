@@ -45,6 +45,20 @@ cmake ../
 make
 ~~~~
 
+## PD FLOW
+
+The design successfully synthesizes to a 7k70t device and achieves an
+operating frequency of ~66 MHz. The 4-Way 32kB configuration of the
+cache consumes 100% of available BRAM resources but only ~8% LUT
+resources. This is consistent with expectation. Cache sizes larger
+than 32kB on the same device require the use of distributed RAM which
+causes utilization to grow and clock frequency to fall precipitously.
+
+~~~~
+cmake ../ -DTARGET_VIVADO=1
+make run_vivado
+~~~~
+
 ## Parameterization
 
 ## Memory Requirements

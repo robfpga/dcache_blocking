@@ -39,7 +39,7 @@ package dcache_blocking_pkg;
   typedef logic [DATA_W-1:0] data_t;
 
   //
-  localparam int CACHE_SIZE_B  = (128 * 1024);
+  localparam int CACHE_SIZE_B  = (32 * 1024);
 
   //
   localparam int CACHE_LINE_B  = (256 / 8);
@@ -149,6 +149,7 @@ package dcache_blocking_pkg;
 
   //
   typedef logic [CACHE_WAYS_N-1:0] ways_t;
+  typedef logic [$clog2(CACHE_WAYS_N)-1:0] ways_enc_t;
 
   //
   localparam int MEM_DATA_W  = RAM_DAT_W;

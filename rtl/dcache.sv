@@ -236,7 +236,6 @@ module dcache
   logic                                      s1_cmd_nop;
   logic                                      s1_cmd_inv;
   logic                                      s1_cmd_store;
-  logic                                      dcache__resp_replay_inv_r;
   logic                                      dcache__resp_replay_inv_w;
   logic                                      dcache__resp_replay_w;
   logic                                      dcache__resp_valid_w;

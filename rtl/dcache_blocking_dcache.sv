@@ -236,7 +236,6 @@ module dcache_blocking_dcache
   logic                                      s1_cmd_nop;
   logic                                      s1_cmd_inv;
   logic                                      s1_cmd_store;
-  logic                                      dcache__resp_replay_inv_r;
   logic                                      dcache__resp_replay_inv_w;
   logic                                      dcache__resp_replay_w;
   logic                                      dcache__resp_valid_w;
@@ -247,6 +246,7 @@ module dcache_blocking_dcache
   ways_t                                     s1_evict_way_sel_r;
   ways_t                                     s1_wrbk_bnk_sel_w;
   ways_t                                     s1_wrbk_bnk_sel_r;
+  ways_enc_t                                 s1_wrbk_bnk_sel_enc;
   ways_t                                     s1_dat_sel;
   ways_t                                     s1_tag_sel;
   tag_state_t  [CACHE_WAYS_N-1:0]            s1_tag_bypass;
@@ -261,6 +261,7 @@ module dcache_blocking_dcache
   ways_t                                     s2_hit_w;
   ways_t                                     s2_hit_r;
   ways_t                                     s2_tag_valid_w;
+  ways_t                                     s2_tag_valid_ffs;
   ways_t                                     s2_tag_valid_r;
   tag_state_t                                s2_tag_w;
   tag_state_t                                s2_tag_r;
@@ -296,6 +297,8 @@ module dcache_blocking_dcache
   wrbk_t                                     wrbk_w;
   logic                                      wrbk_en;
   //
+  ways_enc_t                                 wrbk_r_w_enc;
+  //
   logic                                      wrbk_valid_r;
   logic                                      wrbk_valid_w;
   //
@@ -306,6 +309,7 @@ module dcache_blocking_dcache
   logic                                      tag_sel_init;
   logic                                      tag_sel_wrbk;
   //
+  ways_enc_t                                 way_sel_d_enc;
 
   // ======================================================================== //
   //                                                                          //
@@ -322,25 +326,6 @@ module dcache_blocking_dcache
       dcache__busy_w = (~rst) & (dc_fsm_w [DC_FSM_BUSY_B] | wrbk_valid_w);
 
     end // block: status_PROC
-
-
-`define FFS_SUFFIX WaysN
-`define FFS_W CACHE_WAYS_N
-`include "ffs.vh"
-`undef FFS_W
-`undef FFS_SUFFIX
-
-`define ENCODE_SUFFIX WaysN
-`define ENCODE_W CACHE_WAYS_N
-`include "encode.vh"
-`undef ENCODE_W
-`undef ENCODE_SUFFIX
-
-`define ROTATE_SUFFIX WaysN
-`define ROTATE_W CACHE_WAYS_N
-`include "rotate.vh"
-`undef ROTATE_W
-`undef ROTATE_SUFFIX
 
   // ------------------------------------------------------------------------ //
   //
@@ -365,7 +350,7 @@ module dcache_blocking_dcache
       dc_fsm_state_bnk_sel_s1   = (dc_fsm_state_r.bnk_sel_d << 1);
 
       //
-      dc_fsm_state_way_sel_s1   = RotateWaysN(dc_fsm_state_r.way_sel_d, 1);
+//      dc_fsm_state_way_sel_s1   = RotateWaysN(dc_fsm_state_r.way_sel_d, 1);
 
       //
       dc_fsm_state_cnt_inc      = dc_fsm_state_r.cnt + 'b1;
@@ -599,7 +584,7 @@ module dcache_blocking_dcache
         end
 
         default: begin
-          dc_fsm_w  = 'x;
+          dc_fsm_w  = dc_fsm_r;
         end
 
       endcase // case (dc_fsm_r)
@@ -649,8 +634,7 @@ module dcache_blocking_dcache
 
         tag_sel_inv_cmd: begin
           tag_cmd_en     = dc_fsm_state_r.way_sel_d;
-          if (dc_fsm_r == DC_INV_CHK_TAG)
-             tag_cmd_wen    = '1;
+          tag_cmd_wen    = (dc_fsm_r == DC_INV_CHK_TAG) ? '1 : '0;
           tag_cmd_addr   = dc_fsm_state_r.cnt;
           tag_cmd_wdata  = '0;
         end
@@ -702,7 +686,7 @@ module dcache_blocking_dcache
   always_comb
     begin : dat_PROC
 
-      logic [1:0] w = EncodeWaysN(dc_fsm_state_r.way_sel_d);
+      ways_enc_t w = way_sel_d_enc;
 
       //
       dat_cmd_en       = '0;
@@ -735,7 +719,7 @@ module dcache_blocking_dcache
 
         wrbk_valid_r: begin
 
-          logic [1:0] w = EncodeWaysN(wrbk_r.w);
+          ways_enc_t w      = wrbk_r_w_enc;
           dat_cmd_en [w]    = wrbk_r.b;
           dat_cmd_wen [w]   = '1;
           dat_cmd_addr      = wrbk_r.o;
@@ -816,7 +800,7 @@ module dcache_blocking_dcache
 
       //
       s2_evict_way_w    =   (s2_tag_valid_w != '1)
-                          ? FFSWaysN(~s2_tag_valid_w)
+                          ? s2_tag_valid_ffs
                           : s1_evict_way_sel_r
                         ;
 
@@ -1032,7 +1016,7 @@ module dcache_blocking_dcache
       // selection is made from the value of the address in the pipeline ucode.
       //
       s1_dat_bnk_sel      =   dcache__busy_r
-                            ? EncodeWaysN(s1_wrbk_bnk_sel_r)
+                            ? s1_wrbk_bnk_sel_enc
                             : s1_cmd_r.addr.p.b
                           ;
 
@@ -1159,23 +1143,19 @@ module dcache_blocking_dcache
   generate for (genvar w = 0; w < CACHE_WAYS_N; w++) begin : tag_GEN
 
     //
-    spram #(   .MEM_N    (RAM_TAG_N)
-             , .DATA_W   (TAG_STATE_W)
-             , .ADDR_W   (RAM_TAG_ADDR_W)
+    spsram #(  .N    (RAM_TAG_N)
+             , .W   (TAG_STATE_W)
            ) u_ram_tag
     (
       //
         .clk               (clk                )
-      , .rst               (rst                )
       //
-      , .cmd_en            (tag_cmd_en [w]     )
-      , .cmd_wen           (tag_cmd_wen [w]    )
-      , .cmd_addr          (tag_cmd_addr       )
-      , .cmd_wdata         (tag_cmd_wdata      )
+      , .en                (tag_cmd_en [w]     )
+      , .wen               (tag_cmd_wen [w]    )
+      , .addr              (tag_cmd_addr       )
+      , .din               (tag_cmd_wdata      )
       //
-      , .resp_rdata        (tag_cmd_rdata [w]  )
-      , .resp_serr         ()
-      , .resp_derr         ()
+      , .dout              (tag_cmd_rdata [w]  )
     );
 
   end endgenerate // block: tag_GEN
@@ -1185,11 +1165,9 @@ module dcache_blocking_dcache
   generate for (genvar w = 0; w < CACHE_WAYS_N; w++) begin : ram_dat_GEN
 
       //
-      ram_dat_way u_ram_dat
-      (
+      ram_dat_way u_ram_dat (
           //
           .clk               (clk                )
-        , .rst               (rst                )
         //
         , .cmd_en            (dat_cmd_en [w]     )
         , .cmd_wen           (dat_cmd_wen [w]    )
@@ -1201,6 +1179,52 @@ module dcache_blocking_dcache
 
   end endgenerate // block: ram_dat_GEN
 
+  // ------------------------------------------------------------------------ //
+  //
+  ffs #(.W(CACHE_WAYS_N)) u_ffs (
+    //
+      .x(~s2_tag_valid_w           )
+    //
+    , .y(s2_tag_valid_ffs          )
+    , .n()
+  );
+  
+  // ------------------------------------------------------------------------ //
+  //
+  encoder #(.W(CACHE_WAYS_N)) u_encode_way_sel_d (
+    //
+      .x(dc_fsm_state_r.way_sel_d  )
+    //
+    , .n(way_sel_d_enc             )
+  );
+  
+  // ------------------------------------------------------------------------ //
+  //
+  encoder #(.W(CACHE_WAYS_N)) u_encode_wrbk_r_w (
+    //
+      .x(wrbk_r.w                  )
+    //
+    , .n(wrbk_r_w_enc              )
+  );
+  
+  // ------------------------------------------------------------------------ //
+  //
+  encoder #(.W(CACHE_WAYS_N)) u_encode_wrbk_bnk_sel (
+    //
+      .x(s1_wrbk_bnk_sel_r         )
+    //
+    , .n(s1_wrbk_bnk_sel_enc       )
+  );
+
+  // ------------------------------------------------------------------------ //
+  //
+  rotate #(.W(CACHE_WAYS_N)) u_rotate (
+    //
+      .x(dc_fsm_state_r.way_sel_d  )
+    , .n('b1)
+    //
+    , .y(dc_fsm_state_way_sel_s1   )
+  );
 
   // ======================================================================== //
   //                                                                          //
